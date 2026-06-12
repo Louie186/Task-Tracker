@@ -3386,7 +3386,7 @@ async function doRecovery_core(){
 #uPetModeSel option{background:#1a1c16}
 #uPetClose{cursor:pointer;color:rgba(255,255,255,.38);font-size:1.1rem;line-height:1;background:none;border:none;transition:.15s;padding:0 2px}
 #uPetClose:hover{color:rgba(255,116,116,.9)}
-#uL2D{display:none;position:absolute;inset:0;width:100%;height:100%;cursor:pointer}#uPetClip{position:relative;width:459px;height:265px;overflow:hidden;background:#fff;border-radius:0 0 12px 12px;border:1px solid rgba(216,183,109,.22);border-top:none}
+#uL2D{display:none;position:absolute;top:0;left:0;width:612px;height:352px;cursor:pointer;z-index:0}#uPetClip{position:relative;width:459px;height:265px;overflow:hidden;background:#fff;border-radius:0 0 12px 12px;border:1px solid rgba(216,183,109,.22);border-top:none}
 #uPetStage{width:612px;height:352px;transform:scale(.75);transform-origin:top left;position:relative}
 .uLayer{position:absolute;top:0;left:0;width:612px;height:352px;transform:scaleX(-1)}
 #uKb{opacity:0;transition:opacity .05s}#uFace{opacity:0;transition:opacity .25s}
@@ -3400,7 +3400,7 @@ async function doRecovery_core(){
 <div id="uPetWin">
   <div id="uBub"></div>
   <div id="uPetBar"><span id="uPetBarLbl">🐱 Urume-chan</span><select id="uPetModeSel" onchange="uSetMode(this.value)"><option value="gamepad">Gamepad</option><option value="keyboard">Keyboard</option><option value="live2d">Live2D ✨</option></select><button id="uPetClose" onclick="uToggle()">×</button></div>
-  <div id="uPetClip"><canvas id="uL2D"></canvas><div id="uPetStage"><img class="uLayer" id="uBg" src="" alt=""><img class="uLayer" id="uKb" src="" alt=""><img class="uLayer" id="uCat" src="" alt=""><img class="uLayer" id="uFace" src="" alt=""><img class="uLayer" id="uLH" src="" alt=""><img class="uLayer" id="uRH" src="" alt=""></div></div>
+  <div id="uPetClip"><div id="uPetStage"><canvas id="uL2D" width="612" height="352"></canvas><img class="uLayer" id="uBg" src="" alt=""><img class="uLayer" id="uKb" src="" alt=""><img class="uLayer" id="uCat" src="" alt=""><img class="uLayer" id="uFace" src="" alt=""><img class="uLayer" id="uLH" src="" alt=""><img class="uLayer" id="uRH" src="" alt=""></div></div>
 </div>
 
 <script>
@@ -3516,7 +3516,7 @@ function uStartClock(canvas){if(uClockRaf)cancelAnimationFrame(uClockRaf);var ct
 #uPetModeSel option{background:#1a1c16}
 #uPetClose{cursor:pointer;color:rgba(255,255,255,.38);font-size:1.1rem;line-height:1;background:none;border:none;transition:.15s;padding:0 2px}
 #uPetClose:hover{color:rgba(255,116,116,.9)}
-#uL2D{display:none;position:absolute;inset:0;width:100%;height:100%;cursor:pointer}#uPetClip{position:relative;width:459px;height:265px;overflow:hidden;background:#fff;border-radius:0 0 12px 12px;border:1px solid rgba(216,183,109,.22);border-top:none}
+#uL2D{display:none;position:absolute;top:0;left:0;width:612px;height:352px;cursor:pointer;z-index:0}#uPetClip{position:relative;width:459px;height:265px;overflow:hidden;background:#fff;border-radius:0 0 12px 12px;border:1px solid rgba(216,183,109,.22);border-top:none}
 #uPetStage{width:612px;height:352px;transform:scale(.75);transform-origin:top left;position:relative}
 .uLayer{position:absolute;top:0;left:0;width:612px;height:352px;transform:scaleX(-1)}
 #uKb{opacity:0;transition:opacity .05s}#uFace{opacity:0;transition:opacity .25s}
@@ -3530,7 +3530,7 @@ function uStartClock(canvas){if(uClockRaf)cancelAnimationFrame(uClockRaf);var ct
 <div id="uPetWin">
   <div id="uBub"></div>
   <div id="uPetBar"><span id="uPetBarLbl">🐱 Urume-chan</span><select id="uPetModeSel" onchange="uSetMode(this.value)"><option value="gamepad">Gamepad</option><option value="keyboard">Keyboard</option><option value="live2d">Live2D ✨</option></select><button id="uPetClose" onclick="uToggle()">×</button></div>
-  <div id="uPetClip"><canvas id="uL2D"></canvas><div id="uPetStage"><img class="uLayer" id="uBg" src="" alt=""><img class="uLayer" id="uKb" src="" alt=""><img class="uLayer" id="uCat" src="" alt=""><img class="uLayer" id="uFace" src="" alt=""><img class="uLayer" id="uLH" src="" alt=""><img class="uLayer" id="uRH" src="" alt=""></div></div>
+  <div id="uPetClip"><div id="uPetStage"><canvas id="uL2D" width="612" height="352"></canvas><img class="uLayer" id="uBg" src="" alt=""><img class="uLayer" id="uKb" src="" alt=""><img class="uLayer" id="uCat" src="" alt=""><img class="uLayer" id="uFace" src="" alt=""><img class="uLayer" id="uLH" src="" alt=""><img class="uLayer" id="uRH" src="" alt=""></div></div>
 </div>
 
 <script>
@@ -3840,7 +3840,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // (dedication accessible via sidebar button)
 
-/* ═══ v9.2 LIVE2D PET — Umaru model from img/standard/cat_model ════ */
+/* ═══ v9.2.1 LIVE2D PET — full desk scene, like the desktop app ═══
+   Layers (bottom→top): Umaru (canvas) → desk+mouse bg → key glow → typing arm
+   The bg's top is transparent, so she peeks from behind the desk. */
 (function(){
   var L2D={app:null,model:null,loading:false,ready:false,lastMotion:0};
   var MODEL_URL='img/standard/cat_model/cat.model3.json';
@@ -3863,14 +3865,34 @@ document.addEventListener('DOMContentLoaded', () => {
     })});
     return p;
   }
+  // Sprite set for live2d mode: desk scene + standard-mode arm and key-glow frames
+  var _l2dOrigUMD=uMD;
+  uMD=function(){
+    if(typeof uMode!=='undefined'&&uMode==='live2d'){
+      return{
+        bg:'standard/l2dbg.png',
+        cat:'',
+        face:function(){return ''},
+        lhUp:'',rhUp:'',
+        lhFrame:function(kc){var i=uLH.indexOf(kc);return(i>=0&&i<50)?i:-1;},
+        rhFrame:function(){return -1;},
+        kbFrame:function(kc){var i=uLH.indexOf(kc);return(i>=0&&i<50)?i:-1;},
+        lhSrc:function(n){return(n>=0&&n<50)?'standard/hand/'+n+'.png':'';},
+        rhSrc:function(){return '';},
+        kbSrc:function(n){return(n>=0&&n<50)?'standard/keyboard/'+n+'.png':'';},
+        faceCount:0
+      };
+    }
+    return _l2dOrigUMD();
+  };
   function fitModel(){
     if(!L2D.model||!L2D.app)return;
     var m=L2D.model,W=L2D.app.renderer.width,H=L2D.app.renderer.height;
     m.scale.set(1);
-    var s=Math.min(W/m.width,H/m.height)*1.16;     // l2d_correct from the exe config
-    m.scale.set(-s,s);                              // negative x = horizontal flip, like the exe
+    var s=Math.min(W/m.width,H/m.height)*1.16;   // l2d_correct from the exe config
+    m.scale.set(s,s);
     m.anchor.set(0.5,0.5);
-    m.position.set(W/2,H/2-H*0.005);
+    m.position.set(W*0.5,H*0.5-H*0.005);
   }
   function playMotion(){
     var now=Date.now();
@@ -3879,29 +3901,27 @@ document.addEventListener('DOMContentLoaded', () => {
     try{L2D.model.motion('CAT_motion')}catch(e){}
   }
   function uL2DShow(){
-    var cv=document.getElementById('uL2D'),stage=document.getElementById('uPetStage'),clip=document.getElementById('uPetClip');
+    var cv=document.getElementById('uL2D');
     if(!cv)return;
-    if(stage)stage.style.display='none';
     cv.style.display='block';
-    if(clip)clip.style.background='#2b2b2b';        // dark stage like the desktop app
     if(L2D.ready||L2D.loading)return;
     L2D.loading=true;
     if(typeof toastMsg==='function')toastMsg('Loading Live2D…');
     loadLibs().then(function(){
-      L2D.app=new PIXI.Application({view:cv,width:459,height:265,backgroundAlpha:0,autoStart:true});
+      L2D.app=new PIXI.Application({view:cv,width:612,height:352,backgroundAlpha:0,autoStart:true});
       return PIXI.live2d.Live2DModel.from(MODEL_URL,{autoInteract:false});
     }).then(function(model){
       L2D.model=model;L2D.app.stage.addChild(model);fitModel();
       L2D.ready=true;L2D.loading=false;
-      // Eyes follow your cursor anywhere on the page
+      // Eyes follow the cursor anywhere on the page
       window.addEventListener('pointermove',function(e){
         if(!L2D.ready||uMode!=='live2d')return;
         var r=cv.getBoundingClientRect();
-        try{L2D.model.focus(e.clientX-r.left,e.clientY-r.top)}catch(err){}
+        var sx=r.width/612,sy=r.height/352;
+        try{L2D.model.focus((e.clientX-r.left)/(sx||1),(e.clientY-r.top)/(sy||1))}catch(err){}
       });
-      // Tap her = play a motion (with sound)
+      // Tap her = motion (with sound). Typing = occasional reaction.
       cv.addEventListener('pointerdown',playMotion);
-      // Typing combos make her react now and then
       document.addEventListener('keydown',function(){
         if(uMode!=='live2d'||!L2D.ready)return;
         if(Math.random()<0.04)playMotion();
@@ -3910,32 +3930,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }).catch(function(err){
       console.error('Live2D load failed:',err);
       L2D.loading=false;
-      if(typeof toastMsg==='function')toastMsg('Live2D failed — model files missing? Reverting.');
+      if(typeof toastMsg==='function')toastMsg('Live2D failed — check img/standard/cat_model files. Reverting.');
       if(typeof uSetMode==='function')uSetMode('gamepad');
     });
   }
   function uL2DHide(){
-    var cv=document.getElementById('uL2D'),stage=document.getElementById('uPetStage');
+    var cv=document.getElementById('uL2D');
     if(cv)cv.style.display='none';
-    if(stage)stage.style.display='';
   }
-  // Wrap the mode loader: 'live2d' takes over, anything else runs the original
+  // Mode loader wrapper: live2d loads the desk-scene sprites AND the canvas
   var _l2dOrigLoadMode=uLoadMode;
   uLoadMode=function(){
+    var lbl=document.getElementById('uPetBarLbl');
     if(typeof uMode!=='undefined'&&uMode==='live2d'){
+      _l2dOrigLoadMode();
       uL2DShow();
-      var ms=document.getElementById('uPetModeSel');if(ms)ms.value='live2d';
-      var ps=document.getElementById('petModeSelect');if(ps)ps.value='live2d';
-      var lbl=document.getElementById('uPetBarLbl');if(lbl)lbl.textContent='✨ Urume-chan';
+      if(lbl)lbl.textContent='✨ Urume-chan';
       return;
     }
     uL2DHide();
-    var lbl=document.getElementById('uPetBarLbl');if(lbl)lbl.textContent='🐱 Urume-chan';
+    if(lbl)lbl.textContent='🐱 Urume-chan';
     _l2dOrigLoadMode();
   };
 })();
-
-
 
 /* ═══ v9.1 PRO PACK — self-contained, append-only ══════════════ */
 
