@@ -3895,8 +3895,8 @@ var uL2DAssets={"scene/bg":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAmQAAA
   }
   function buildScene(){
     var st=L2D.app.stage;
-    st.addChild(L2D.model);                 // 1. Umaru (back)
-    st.addChild(spr('scene/bg'));           // 2. desk + mouse over her
+    st.addChild(spr('scene/bg'));           // 1. desk + mouse (bottom)
+    st.addChild(L2D.model);                 // 2. Umaru ON the desk — her hand sits over table/mouse
     L2D.key=spr('scene/key0');L2D.key.visible=false;st.addChild(L2D.key);    // 3. key glow
     L2D.arm=spr('scene/arm0');L2D.arm.visible=false;st.addChild(L2D.arm);    // 4. typing arm
     L2D.click=spr('scene/click_left');L2D.click.visible=false;st.addChild(L2D.click); // 5. click glow
