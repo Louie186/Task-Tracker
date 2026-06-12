@@ -3920,18 +3920,37 @@ var uL2DAssets={"scene/bg":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAmQAAA
     try{L2D.model.motion('CAT_motion')}catch(e){}
   }
   // ── Drive the model's own parameters (same ones the desktop exe uses) ──
+  // Writes go straight to the raw Cubism core arrays (string IDs always work
+  // there), then get saved so the engine's per-frame load/save keeps them.
+  function rawCore(){
+    var cm=L2D.model&&L2D.model.internalModel&&L2D.model.internalModel.coreModel;
+    if(!cm)return null;
+    var raw=cm._model||cm.getModel&&cm.getModel()||null;
+    return(raw&&raw.parameters&&raw.parameters.ids)?{cm:cm,raw:raw}:{cm:cm,raw:null};
+  }
   function setP(id,v){
     try{
-      var cm=L2D.model.internalModel.coreModel;
-      cm.setParameterValueById(id,v);
-      cm.saveParameters();              // persist past the engine's load/save cycle
+      var c=rawCore();if(!c)return;
+      var done=false;
+      if(c.raw){
+        var i=c.raw.parameters.ids.indexOf(id);
+        if(i>=0){c.raw.parameters.values[i]=v;done=true;}
+      }
+      if(!done&&c.cm.setParameterValueById){
+        try{c.cm.setParameterValueById(id,v);}catch(e2){}
+      }
+      if(c.cm.saveParameters)c.cm.saveParameters();
     }catch(e){}
   }
   function pRange(id){
     try{
-      var cm=L2D.model.internalModel.coreModel,i=cm.getParameterIndex(id);
-      return[cm.getParameterMinimumValue(i),cm.getParameterMaximumValue(i)];
-    }catch(e){return[0,1]}
+      var c=rawCore();
+      if(c&&c.raw){
+        var i=c.raw.parameters.ids.indexOf(id);
+        if(i>=0)return[c.raw.parameters.minimumValues[i],c.raw.parameters.maximumValues[i]];
+      }
+    }catch(e){}
+    return[0,1];
   }
   var pKeyT=null;
   function onKey(e){
