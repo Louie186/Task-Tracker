@@ -823,6 +823,9 @@ input:focus,textarea:focus,select:focus{
 }
 ::-webkit-scrollbar-thumb:hover{background:color-mix(in srgb,var(--accent) 52%,transparent);background-clip:padding-box}
 
+/* ── Live2D mode: render the desk scene in true orientation (un-mirror) ── */
+#uPetStage.l2d-on .uLayer{transform:none}
+
 /* ── Respect reduced motion (system + in-app toggle) ─────────── */
 @media (prefers-reduced-motion:reduce){
   body::after{animation:none}
@@ -2216,7 +2219,7 @@ function gmtOffset(zone){try{return new Intl.DateTimeFormat('en-US',{timeZone:zo
 function zoneTime(zone){try{return new Intl.DateTimeFormat([],{timeZone:zone,hour:'2-digit',minute:'2-digit',second:'2-digit'}).format(new Date())}catch{return'--:--'}}
 function openWorldChoice(slot){worldSlot=slot;worldModalTitle.textContent='Set World Time '+(slot+1);worldZone.innerHTML=TZ.map(z=>`<option value="${z[1]}">${z[0]} — ${gmtOffset(z[1])}</option>`).join('');worldZone.value=data.settings.world?.[slot]||'Asia/Qatar';openModal('worldModal')}
 function saveWorldChoice(){data.settings.world[worldSlot]=worldZone.value;closeModal('worldModal');save();tickClock()}
-function tickClock(){const localZone=Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC',now=new Date();if(localClock)localClock.textContent=now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});if(localGmt)localGmt.textContent=gmtOffset(localZone);const zones=data.settings.world||['Asia/Qatar','Asia/Manila'];if(worldCards)worldCards.innerHTML=zones.map((z,i)=>`<div class="world-card" onclick="openWorldChoice(${i})"><span class="small">${esc(zoneLabel(z))}</span><b>${zoneTime(z)}</b><span class="pill">${gmtOffset(z)}</span></div>`).join('')}
+function tickClock(){const localZone=Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC',now=new Date();if(localClock)localClock.textContent=now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});if(localGmt)localGmt.textContent=gmtOffset(localZone);const zones=(data&&data.settings&&data.settings.world)||['Asia/Qatar','Asia/Manila'];if(worldCards)worldCards.innerHTML=zones.map((z,i)=>`<div class="world-card" onclick="openWorldChoice(${i})"><span class="small">${esc(zoneLabel(z))}</span><b>${zoneTime(z)}</b><span class="pill">${gmtOffset(z)}</span></div>`).join('')}
 setInterval(tickClock,1000);
 
 // ── Settings ──────────────────────────────────────────────────────────────────
@@ -3890,7 +3893,7 @@ document.addEventListener('DOMContentLoaded', () => {
     var m=L2D.model,W=L2D.app.renderer.width,H=L2D.app.renderer.height;
     m.scale.set(1);
     var s=Math.min(W/m.width,H/m.height)*1.16;   // l2d_correct from the exe config
-    m.scale.set(s,s);
+    m.scale.set(-s,s);                            // horizontal flip, same as the exe (l2d_horizontal_flip)
     m.anchor.set(0.5,0.5);
     m.position.set(W*0.5,H*0.5-H*0.005);
   }
@@ -3942,7 +3945,9 @@ document.addEventListener('DOMContentLoaded', () => {
   var _l2dOrigLoadMode=uLoadMode;
   uLoadMode=function(){
     var lbl=document.getElementById('uPetBarLbl');
-    if(typeof uMode!=='undefined'&&uMode==='live2d'){
+    var isL2D=(typeof uMode!=='undefined'&&uMode==='live2d');
+    document.querySelectorAll('#uPetStage').forEach(function(st){st.classList.toggle('l2d-on',isL2D)});
+    if(isL2D){
       _l2dOrigLoadMode();
       uL2DShow();
       if(lbl)lbl.textContent='✨ Urume-chan';
